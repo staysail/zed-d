@@ -1,0 +1,13 @@
+{
+  "name": "D",
+  "version": "0.0.1",
+  "authors": ["Garrett D'Amore <garrett@staysail.tech>"],
+  "description": "D language support for Zed",
+  "repository": "https://github.com/staysail/zed-d",
+  "languages": {
+    "D": "languages/d"
+  },
+  "grammars": {
+    "d": "grammars/d.wasm"
+  }
+}
