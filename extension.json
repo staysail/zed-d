@@ -1,6 +1,6 @@
 {
   "name": "D",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": ["Garrett D'Amore <garrett@staysail.tech>"],
   "description": "D language support for Zed",
   "repository": "https://github.com/staysail/zed-d",
