@@ -1,0 +1,15 @@
+id = "d"
+name = "D"
+description = "D language support"
+version = "0.0.3"
+schema_version = 1
+authors = ["Garrett D'Amore <garrett@staysail.tech>"]
+repository = "https://github.com/staysail/zed-d"
+
+[language_servers.serve-d]
+name = "serve-d"
+language = "D"
+
+[grammars.d]
+repository = "https://github.com/gdamore/tree-sitter-d"
+commit = "750dde90ed9cdbd82493bc28478d8ab1976b0e9f"
