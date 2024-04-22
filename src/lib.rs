@@ -1,5 +1,6 @@
 use std::fs;
-use zed_extension_api::{self as zed, Result};
+use zed::settings::{self, BinarySettings, LspSettings};
+use zed_extension_api::{self as zed, serde_json, Result};
 
 // This code was adapted from the csharp extension that is built into Zed.
 // That code carried an Apache 2.0 license.
@@ -11,7 +12,7 @@ struct DExtension {
 impl DExtension {
     fn language_server_binary_path(
         &mut self,
-        config: zed::LanguageServerConfig,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<String> {
         if let Some(path) = &self.cached_binary_path {
@@ -26,7 +27,7 @@ impl DExtension {
         }
 
         zed::set_language_server_installation_status(
-            &config.name,
+            &language_server_id,
             &zed::LanguageServerInstallationStatus::CheckingForUpdate,
         );
         let release = zed::latest_github_release(
@@ -76,7 +77,7 @@ impl DExtension {
 
         if !fs::metadata(&binary_path).map_or(false, |stat| stat.is_file()) {
             zed::set_language_server_installation_status(
-                &config.name,
+                &language_server_id,
                 &zed::LanguageServerInstallationStatus::Downloading,
             );
         }
@@ -114,14 +115,62 @@ impl zed::Extension for DExtension {
 
     fn language_server_command(
         &mut self,
-        config: zed::LanguageServerConfig,
+        language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
         Ok(zed::Command {
-            command: self.language_server_binary_path(config, worktree)?,
-            args: vec![],
+            command: self.language_server_binary_path(language_server_id, worktree)?,
+            args: vec![
+                "--provide".to_string(),
+                "contexts-snippets".to_string(),
+                "--provide".to_string(),
+                "default-snippets".to_string(),
+                "--loglevel".to_string(),
+                "trace".to_string(),
+                "--logfile".to_string(),
+                "/var/tmp/served.log".to_string(),
+            ],
             env: Default::default(),
         })
+    }
+
+    // fn language_server_workspace_configuration(
+    //     &mut self,
+    //     _language_server_id: &zed::LanguageServerId,
+    //     _worktree: &zed::Worktree,
+    // ) -> Result<Option<serde_json::Value>> {
+    //     Ok(Some(serde_json::json!(LspSettings::for_worktree(
+    //         "serve-d", _worktree
+    //     ))))
+    // }
+
+    fn language_server_workspace_configuration(
+        &mut self,
+        _language_server_id: &zed::LanguageServerId,
+        _worktree: &zed::Worktree,
+    ) -> Result<Option<serde_json::Value>> {
+        let serde_d_settings = LspSettings::for_worktree("serve-d", _worktree).ok();
+
+        let settings = LspSettings::for_worktree("serve-d", _worktree)
+            .ok()
+            .and_then(|lsp_settings| lsp_settings.settings.clone())
+            .unwrap_or_default();
+
+        std::fs::write(
+            "all_lsp_settings.json",
+            serde_json::to_string_pretty(&serde_d_settings).unwrap(),
+        )
+        .unwrap();
+
+        // ~/Library/Application\ Support/Zed/extensions/work/d/
+        std::fs::write(
+            "lsp_settings.json",
+            serde_json::to_string_pretty(&settings).unwrap(),
+        )
+        .unwrap();
+
+        println!("{settings:?}");
+        Ok(Some(serde_json::json!(settings)))
     }
 }
 zed::register_extension!(DExtension);
