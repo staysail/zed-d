@@ -8,6 +8,9 @@
 ; (See accompanying file LICENSE.txt or https://opensource.org/licenses/MIT)
 ; SPDX-License-Identifier: MIT
 
+; put that first, since it might overwrite other queries such as the functions ones
+(identifier) @variable
+
 ; these are listed first, because they override keyword queries
 (identity_expression (in) @operator)
 (identity_expression (is) @operator)
@@ -237,7 +240,6 @@
 (int_literal) @number
 (float_literal) @number
 (char_literal) @number
-(identifier) @variable
 (at_attribute) @property
 
 ; everything after __EOF_ is plain text
