@@ -40,6 +40,10 @@
 (call_expression (identifier) @function)
 (call_expression (type (identifier) @function))
 
+(struct_declaration ((identifier) @type))
+(class_declaration ((identifier) @type))
+(enum_declaration ((identifier) @type))
+
 (parameter (type (identifier) @type)) 
 (variable_declaration (type (identifier) @type))
 
