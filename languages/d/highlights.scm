@@ -40,6 +40,8 @@
 (call_expression (identifier) @function)
 (call_expression (type (identifier) @function))
 
+(variable_declaration (type (identifier) @type))
+
 [
     (abstract)
     (alias)
