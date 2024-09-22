@@ -12,4 +12,4 @@ language = "D"
 
 [grammars.d]
 repository = "https://github.com/gdamore/tree-sitter-d"
-commit = "5dd64071dac90497ac5ad12e583bb03e46f8eb86"
+commit = "45e5f1e9d6de2c68591bc8e5ec662cf18e950b4a"
