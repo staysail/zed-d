@@ -1,19 +1,44 @@
 # D for Zed
 
-This is a very preliminary extension for D. It uses my Tree-Sitter grammar, and includes
+This is an extension for D. It uses my Tree-Sitter grammar, and includes
 syntax highlighting, folds, and outlines for semantic navigation.
 
-It would be nice to also add some task support if Zed provides a way for extensions to do that.
+It optionally utilizes [_serve-d_](https://github.com/Pure-D/serve-d) for additional language support.
 
 ## Testing & Building
 
-You need to build the WASM version of the Tree-Sitter grammar, and then put that in the grammars
-folder, and then copy this repo into the appropriate extension folder. Hopefully the Zed team
-will make this a little more painless in the future.
+Just use the `zed: install dev extension` command on a directory containing a checkout of this repository.
 
 ## Language Server Support
 
-Basic LSP support for serve-d is here. It's not configurable yet.
+Basic LSP support for _serve-d_ is here. Configuration is done in the Zed settings, using
+a `serve-d` key under the `lsp` settings.  For example, this represents the settings we use
+on a project at my employer:
+
+```json
+{
+  "lsp": {
+    "serve-d": {
+      "settings": {
+        "d": {
+          "enableFormatting": false,
+          "enableDubLinting": false,
+          "manyProjectsThreshold": 20,
+          "argumentSnippets": true,
+          "scanAllFolders": false,
+          "lintOnFileOpen": "project"
+        },
+        "dscanner": {
+          "ignoredKeys": ["dscanner.style.long_line"]
+        }
+      },
+      "binary": {
+        "path": "/Users/garrett.damore/Projects/serve-d/serve-d"
+      }
+    }
+  }
+}
+```
 
 ## Licenses
 

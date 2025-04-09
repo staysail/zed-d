@@ -1,7 +1,7 @@
 id = "d"
 name = "D"
 description = "D language support"
-version = "0.0.4"
+version = "0.0.8"
 schema_version = 1
 authors = ["Garrett D'Amore <garrett@staysail.tech>"]
 repository = "https://github.com/staysail/zed-d"
@@ -12,4 +12,4 @@ language = "D"
 
 [grammars.d]
 repository = "https://github.com/gdamore/tree-sitter-d"
-commit = "750dde90ed9cdbd82493bc28478d8ab1976b0e9f"
+commit = "45e5f1e9d6de2c68591bc8e5ec662cf18e950b4a"

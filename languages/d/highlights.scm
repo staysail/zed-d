@@ -2,7 +2,7 @@
 ;
 ; Highlighting queries for D code for use by Tree-Sitter.
 ;
-; Copyright 2023 Garrett D'Amore
+; Copyright 2024 Garrett D'Amore
 ;
 ; Distributed under the MIT License.
 ; (See accompanying file LICENSE.txt or https://opensource.org/licenses/MIT)
@@ -241,7 +241,14 @@
     (real)
     (double)
     (float)
-] @type
+    (size_t)
+    (ptrdiff_t)
+    (string)
+    (cstring)
+    (dstring)
+    (wstring)
+    (noreturn)
+] @type.builtin
 
 [
     (cent)
@@ -263,6 +270,8 @@
 ; these are listed last, because they override keyword queries
 (identity_expression (in) @operator)
 (identity_expression (is) @operator)
+((htmlentity) @string.special)
+((escape_sequence) @string.escape)
 
 ; everything after __EOF_ is plain text
 (end_file) @text
