@@ -1,7 +1,7 @@
 id = "d"
 name = "D"
 description = "D language support"
-version = "0.0.8"
+version = "0.0.9"
 schema_version = 1
 authors = ["Garrett D'Amore <garrett@staysail.tech>"]
 repository = "https://github.com/staysail/zed-d"

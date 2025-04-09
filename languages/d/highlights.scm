@@ -8,39 +8,61 @@
 ; (See accompanying file LICENSE.txt or https://opensource.org/licenses/MIT)
 ; SPDX-License-Identifier: MIT
 
-; these are listed first, because they override keyword queries
-(identity_expression (in) @operator)
-(identity_expression (is) @operator)
-((htmlentity) @string.special)
-((escape_sequence) @string.escape)
+(string_literal) @string
+(int_literal) @number
+(float_literal) @number
+(char_literal) @number
+((identifier) @variable)
+(declarator (identifier) @variable)
+(auto_declaration (identifier) @variable *)
+(at_attribute) @property
 
 [
-	(lazy)
-	(align)
-	(extern)
-	(static)
-	(abstract)
-	(final)
-	(override)
-	(synchronized)
-	(auto)
-	(scope)
-	(gshared)
-	(ref)
-	(deprecated)
-	(nothrow)
-	(pure)
-	(type_ctor)
+    (lazy)
+    (align)
+    (extern)
+    (static)
+    (abstract)
+    (final)
+    (override)
+    (synchronized)
+    (auto)
+    (scope)
+    (gshared)
+    (ref)
+    (deprecated)
+    (nothrow)
+    (pure)
+    (type_ctor)
 ] @keyword.storage
 
 (parameter_attribute (return) @keyword.storage)
 (parameter_attribute (in) @keyword.storage)
 (parameter_attribute (out) @keyword.storage)
 
+
+(template_instance (identifier) @function)
+
 (function_declaration (identifier) @function)
 
-(call_expression (identifier) @function)
-(call_expression (type (identifier) @function))
+(struct_declaration ((identifier) @type))
+(class_declaration ((identifier) @type))
+(enum_declaration ((identifier) @type))
+
+(template_parameter (identifier) @type)
+(template_parameter (type (identifier)) @variable)
+
+
+(arguments (expression (property_expression (identifier)) @variable) )
+
+(type (template_instance (identifier)) @type)
+(function_declaration (type (identifier)) @type)
+(parameter (type (identifier) @type))
+(variable_declaration (type (identifier) @type))
+
+(call_expression
+  (type
+    (identifier) @function .))
 
 [
     (abstract)
@@ -240,14 +262,16 @@
 ] @type.deprecated
 
 (label (identifier) @label)
-(goto_statement (goto) @keyword (identifier) @label)
+(goto_statement (goto) @keyword.control (identifier) @label)
 
-(string_literal) @string
-(int_literal) @number
-(float_literal) @number
-(char_literal) @number
-(identifier) @variable
-(at_attribute) @property
+
+
+
+; these are listed last, because they override keyword queries
+(identity_expression (in) @operator)
+(identity_expression (is) @operator)
+((htmlentity) @string.special)
+((escape_sequence) @string.escape)
 
 ; everything after __EOF_ is plain text
 (end_file) @text
