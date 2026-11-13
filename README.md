@@ -9,6 +9,32 @@ It optionally utilizes [_serve-d_](https://github.com/Pure-D/serve-d) for additi
 
 Just use the `zed: install dev extension` command on a directory containing a checkout of this repository.
 
+### Highlighting regression tests
+
+The highlighting tests require Node.js 18 or later, Tree-sitter CLI 0.27.2, and
+a C compiler supported by the CLI (for example, Visual Studio Build Tools on
+Windows). Check out the grammar revision pinned in `extension.toml`:
+
+```sh
+git clone https://github.com/gdamore/tree-sitter-d.git ../tree-sitter-d
+git -C ../tree-sitter-d checkout 64f27931b4e6fdd75af1102c79bacbca68a8dacc
+node tests/highlighting/test-highlights.cjs tree-sitter ../tree-sitter-d
+```
+
+Replace `tree-sitter` with the executable's path if it is not on your `PATH`.
+The runner prepares CLI metadata in a temporary directory without modifying
+the grammar checkout. It rejects parse errors, compiles the complete query,
+and checks the winning captures at the fixture's annotated source positions.
+The fixture tests syntax highlighting, not D type checking or linking.
+
+Calls, types, declarations, parameters, attributes, constants, documentation,
+and interpolation have dedicated captures. As with Zed's Rust queries,
+uppercase-type and all-caps-constant naming conventions provide fallbacks;
+structural captures override these conventions. The D grammar can represent
+`object.method()` and `module.function()` identically, so both use method-call
+captures. Distinguishing those cases and resolving imported symbols requires
+semantic information. Themes determine the final visible colors.
+
 ## Language Server Support
 
 Basic LSP support for _serve-d_ is here. Configuration is done in the Zed settings, using
