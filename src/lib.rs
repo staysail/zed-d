@@ -45,32 +45,37 @@ impl DExtension {
         }
 
         let (platform, arch) = zed::current_platform();
-        let asset_name = format!(
+        let os = match platform {
+            zed::Os::Mac => "osx",
+            zed::Os::Linux => "linux",
+            zed::Os::Windows => "windows",
+        };
+        let arch = match arch {
+            // NB: no 32-bit support
+            zed::Architecture::Aarch64 => "arm64",
+            zed::Architecture::X8664 => "x86_64",
+            zed::Architecture::X86 => "x86",
+        };
+        let extension = match platform {
+            zed::Os::Mac => ".tar.gz",
+            zed::Os::Linux => ".tar.gz",
+            zed::Os::Windows => ".zip",
+        };
+        let stable_name = format!(
             "serve-d_{version}-{os}-{arch}{extension}",
-            os = match platform {
-                zed::Os::Mac => "osx",
-                zed::Os::Linux => "linux",
-                zed::Os::Windows => "windows",
-            },
-            arch = match arch {
-                // NB: no 32-bit support
-                zed::Architecture::Aarch64 => "arm64",
-                zed::Architecture::X8664 => "x86_64",
-                zed::Architecture::X86 => "x86",
-            },
-            extension = match platform {
-                zed::Os::Mac => ".tar.gz",
-                zed::Os::Linux => ".tar.gz",
-                zed::Os::Windows => ".zip",
-            },
             version = trim_first(release.version.as_str())
         );
+        let nightly_prefix = format!("serve-d_{os}-nightly-{arch}-");
 
         let asset = release
             .assets
             .iter()
-            .find(|asset| asset.name == asset_name)
-            .ok_or_else(|| format!("no asset found matching {:?}", asset_name))?;
+            .filter(|asset| {
+                asset.name == stable_name
+                    || (asset.name.starts_with(&nightly_prefix) && asset.name.ends_with(extension))
+            })
+            .max_by(|a, b| a.name.cmp(&b.name))
+            .ok_or_else(|| format!("no asset found matching {:?}", stable_name))?;
 
         let version_dir = format!("serve-d-{}", release.version);
         let binary_path = format!("{version_dir}/serve-d");
